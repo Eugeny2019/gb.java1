@@ -40,6 +40,13 @@ public class Team implements Runable, Rideable, Swimable{
         }
     }
 
+    public void printTeamMembers() {
+        System.out.println("\nTeam " + teamName + " results:");
+        for (int i = 0; i < members.length; i++) {
+            System.out.print(members[i].getName());
+        }
+    }
+
     @Override
     public boolean ride(int distance) {
         for (int i = 0; i < members.length; i++) {
