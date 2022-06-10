@@ -26,8 +26,8 @@ public class UserInterfaceView {
             try {
                 controller.getWeather(command, city);
             } catch (Exception e) {
-                System.out.println("Уточните название города и количество дней прогноза.");
-                //e.printStackTrace();
+                System.out.println("Уточните название города и количество дней прогноза. (" + command + ":" + city + ")");
+                e.printStackTrace();
             }
         }
     }

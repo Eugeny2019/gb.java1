@@ -69,47 +69,12 @@ public class AccuweatherModel implements WeatherModel {
 
                 Response oneDayForecastResponse = okHttpClient.newCall(request).execute();
                 weatherResponse = oneDayForecastResponse.body().string();
-//                System.out.println(weatherResponse + "/n/n");
+
                 //TODO: сделать человекочитаемый вывод погоды. Выбрать параметры для вывода на свое усмотрение
                 //Например: Погода в городе Москва - 5 градусов по цельсию Expect showers late Monday night
                 //dataBaseRepository.saveWeatherToDataBase(new Weather()) - тут после парсинга добавляем данные в БД
 
-                response = objectMapper.readTree(weatherResponse);
-                Weather weather = null;
-                for (JsonNode node : response) {
-                    String text = node.findValues("Text").toString();
-                    aboutDayRemark = (text.equals("[]") ? aboutDayRemark : text.replaceAll("[\\[\"\\]]", ""));
-                    for (JsonNode inNode : node) {
-                        String dateResponse = inNode.findValues("Date").toString();
-                        if (dateResponse.length() != 0) {
-                            date = dateResponse.replaceAll("[\\[\"\\]]", "");
-                        }
-
-                        JsonNode t = inNode.findParent("Temperature");
-                        if (t != null) {
-                            String temperatureMinResponse = t.findParent("Minimum").findValue("Value").toString();
-                            String temperatureMaxResponse = t.findParent("Maximum").findValue("Value").toString();
-                            if (temperatureMinResponse.length() != 0 && temperatureMaxResponse.length() != 0) {
-                                Double tMin = Double.parseDouble(temperatureMinResponse);
-                                Double tMax = Double.parseDouble(temperatureMaxResponse);
-                                temperature = (tMax + tMin) / 2.0;
-                                weather = new Weather(selectedCity, date, temperature);
-                            }
-                        }
-                    }
-                }
-
-                if (Objects.nonNull((weather))) {
-                    System.out.println("Погода сегодня в городе " + selectedCity + ": Температура " + weather.getTemperature() + " градусов по цельсию. " + aboutDayRemark + ".");
-                    try {
-                        new DataBaseRepository().saveWeatherToDataBase(weather);
-                    } catch (SQLException e) {
-                        System.out.println("Ошибка при записи в БД.");
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    System.out.println("Нет данных о погоде");
-                }
+                new WeatherResponse(selectedCity, weatherResponse).printWeatherResponse();
                 break;
             case FIVE_DAYS:
                 //TODO*: реализовать вывод погоды на 5 дней
@@ -132,52 +97,12 @@ public class AccuweatherModel implements WeatherModel {
 
                 Response fiveDaysForecastResponse = okHttpClient.newCall(request).execute();
                 weatherResponse = fiveDaysForecastResponse.body().string();
-                System.out.println(weatherResponse);
+
                 //TODO: сделать человекочитаемый вывод погоды. Выбрать параметры для вывода на свое усмотрение
                 //Например: Погода в городе Москва - 5 градусов по цельсию Expect showers late Monday night
                 //dataBaseRepository.saveWeatherToDataBase(new Weather()) - тут после парсинга добавляем данные в БД
 
-                response = objectMapper.readTree(weatherResponse);
-                List<Weather> weatherList = new ArrayList<>();
-                for (JsonNode node : response) {
-                    String text = node.findValues("Text").toString();
-                    aboutDayRemark = (text.equals("[]") ? aboutDayRemark : text.replaceAll("[\\[\"\\]]", ""));
-                    for (JsonNode inNode : node) {
-                        String dateResponse = inNode.findValues("Date").toString();
-                        if (dateResponse.length() != 0) {
-                            date = dateResponse.replaceAll("[\\[\"\\]]", "");
-                        }
-
-                        JsonNode t = inNode.findParent("Temperature");
-                        if (t != null) {
-                            String temperatureMinResponse = t.findParent("Minimum").findValue("Value").toString();
-                            String temperatureMaxResponse = t.findParent("Maximum").findValue("Value").toString();
-                            if (temperatureMinResponse.length() != 0 && temperatureMaxResponse.length() != 0) {
-                                Double tMin = Double.parseDouble(temperatureMinResponse);
-                                Double tMax = Double.parseDouble(temperatureMaxResponse);
-                                temperature = (tMax + tMin) / 2.0;
-                                weatherList.add(new Weather(selectedCity, date, temperature));
-                            }
-                        }
-                    }
-                }
-
-
-                if (weatherList.size() != 0) {
-                    System.out.println("Погода на 5 дней в городе " + selectedCity + ":");
-                    for (Weather w : weatherList) {
-                        System.out.println("Дата: " + w.getLocalDate() + " Средняя температура: " + w.getTemperature());
-                    }
-                    System.out.println("Погода сегодня: Температура " + weatherList.get(0).getTemperature() + " градусов по цельсию. " + aboutDayRemark + ".");
-                    try {
-                        new DataBaseRepository().saveWeatherToDataBase(weatherList);
-                    } catch (SQLException e) {
-                        System.out.println("Ошибка при записи в БД.");
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    System.out.println("Нет данных о погоде");
-                }
+                new WeatherResponse(selectedCity, weatherResponse).printWeatherResponse();
                 break;
         }
     }
