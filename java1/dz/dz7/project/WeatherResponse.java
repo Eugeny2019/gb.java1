@@ -56,10 +56,7 @@ public class WeatherResponse {
                 System.out.println("В городе " + selectedCity + " на дату " + w.getLocalDate() + " ожидается " + aboutDayRemark + ", температура " + w.getTemperature() + ".");
 
             }
-            //System.out.println("Погода сегодня: Температура " + weatherList.get(0).getTemperature() + " градусов по цельсию. " + aboutDayRemark + ".");
-            //В городе CITY на дату DATE ожидается WEATHER_TEXT, температура - TEMPERATURE |
-            //
-            //где CITY, DATE, WEATHER_TEXT и TEMPERATURE - уникальные значения для каждого дня.
+
             try {
                 new DataBaseRepository().saveWeatherToDataBase(weatherList);
             } catch (SQLException e) {
