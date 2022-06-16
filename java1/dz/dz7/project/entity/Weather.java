@@ -3,11 +3,13 @@ package java1.dz.dz7.project.entity;
 public class Weather {
     private String city;
     private String localDate;
+    private String text;
     private double temperature;
 
-    public Weather(String city, String localDate, double temperature) {
+    public Weather(String city, String localDate, String text, double temperature) {
         this.city = city;
         this.localDate = localDate;
+        this.text = text;
         this.temperature = temperature;
     }
 
@@ -21,6 +23,10 @@ public class Weather {
 
     public String getLocalDate() {
         return localDate;
+    }
+
+    public String getText() {
+        return text;
     }
 
     public void setLocalDate(String localDate) {

@@ -44,7 +44,7 @@ public class WeatherResponse {
                         Double tMin = Double.parseDouble(temperatureMinResponse);
                         Double tMax = Double.parseDouble(temperatureMaxResponse);
                         temperature = (tMax + tMin) / 2.0;
-                        weatherList.add(new Weather(selectedCity, date, temperature));
+                        weatherList.add(new Weather(selectedCity, date, text, temperature));
                     }
                 }
             }

@@ -112,6 +112,11 @@ public class AccuweatherModel implements WeatherModel {
         return dataBaseRepository.getSavedToDBWeather();
     }
 
+    @Override
+    public List<Weather> getSavedToDBWeatherByCity(String city) {
+        return dataBaseRepository.getSavedToDBWeatherByCity(city);
+    }
+
     private String detectCityKey(String selectCity) throws IOException {
         //http://dataservice.accuweather.com/locations/v1/cities/autocomplete
         HttpUrl httpUrl = new HttpUrl.Builder()

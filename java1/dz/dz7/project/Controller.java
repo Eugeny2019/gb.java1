@@ -12,6 +12,7 @@ public class Controller {
         variants.put(1, Period.NOW);
         variants.put(5, Period.FIVE_DAYS);
         variants.put(2, Period.DB);
+        variants.put(3, Period.DB_BY_CITY);
     }
 
     public void getWeather(String userInput, String selectedCity) throws IOException {
@@ -26,6 +27,12 @@ public class Controller {
                 break;
             case DB:
                 weatherModel.getSavedToDBWeather();
+                break;
+            case DB_BY_CITY:
+                if (weatherModel.getSavedToDBWeatherByCity(selectedCity).size() == 0) {
+                    System.out.println("Нет данных о городе.");
+                }
+                break;
         }
     }
 }

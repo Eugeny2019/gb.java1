@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseRepository {
-    private String insertWeather = "insert into weather (city, localdate, temperature) values (?, ?, ?)";
+    private String insertWeather = "insert into weather (city, localdate, temperature, text) values (?, ?, ?, ?)";
     private String getWeather = "select * from weather";
+
+    private String getWeatherByCity = "select * from weather where city = ?";
     private static final String DB_PATH = "jdbc:sqlite:geekbrains.db";
 
     static {
@@ -27,6 +29,7 @@ public class DataBaseRepository {
                 saveWeather.setString(1, weather.getCity());
                 saveWeather.setString(2, weather.getLocalDate());
                 saveWeather.setDouble(3, weather.getTemperature());
+                saveWeather.setString(4, weather.getText());
                 saveWeather.addBatch();
             }
             saveWeather.executeBatch();
@@ -59,6 +62,33 @@ public class DataBaseRepository {
                 System.out.println(" ");
                 weathers.add(new Weather(resultSet.getString("city"),
                         resultSet.getString("localdate"),
+                        resultSet.getString("text"),
+                        resultSet.getDouble("temperature")));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return weathers;
+    }
+
+    public List<Weather> getSavedToDBWeatherByCity(String city) {
+        List<Weather> weathers = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(DB_PATH)) {
+            PreparedStatement readWeather = connection.prepareStatement(getWeatherByCity);
+            readWeather.setString(1, city);
+            ResultSet resultSet = readWeather.executeQuery();
+            while (resultSet.next()) {
+                System.out.print(resultSet.getInt("id"));
+                System.out.println(" ");
+                System.out.print(resultSet.getString("city"));
+                System.out.println(" ");
+                System.out.print(resultSet.getString("localdate"));
+                System.out.println(" ");
+                System.out.print(resultSet.getDouble("temperature"));
+                System.out.println(" ");
+                weathers.add(new Weather(resultSet.getString("city"),
+                        resultSet.getString("localdate"),
+                        resultSet.getString("text"),
                         resultSet.getDouble("temperature")));
             }
         } catch (SQLException throwables) {
